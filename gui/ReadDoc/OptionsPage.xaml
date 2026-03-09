@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReadDoc.OptionsPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" CanBeDismissedByTappingOutsideOfPopup="False">
+    <ScrollView HorizontalOptions="Center" BackgroundColor="LightGray" WidthRequest="620">
+        <VerticalStackLayout>
+
+            <Grid WidthRequest="600">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="0" Grid.Column="0" >
+                    <toolkit:Expander.Header>
+                        <Label Text="Capture Lights" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <Grid x:Name="Images" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <CollectionView Grid.Row="0" Grid.Column="0" x:Name="Light_List" SelectionMode="Multiple">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="x:Object">
+                                        <Grid>
+                                            <Label Text="{Binding .}" VerticalOptions="Center" TextColor="Black" Padding="10,0,0,0" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="0" Grid.Column="1" >
+                    <toolkit:Expander.Header>
+                        <Label Text="Document View Setting" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <Grid x:Name="DocumentView" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <HorizontalStackLayout  Grid.Row="0" Grid.Column="0" >
+                                <CheckBox x:Name="Check_IsDocView" IsChecked="False" Color="#BC9C6A" />
+                                <Label Text="Enable Document View" VerticalOptions="Center" TextColor="Black" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="1" Grid.Column="0" >
+                    <toolkit:Expander.Header>
+                        <Label Text="OCR Reading Sources" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <CollectionView  x:Name="OcrTask_List" SelectionMode="Multiple">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="x:Object">
+                                    <Grid>
+                                        <Label Text="{Binding .}" VerticalOptions="Center" TextColor="Black" Padding="10,0,0,0" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="1" Grid.Column="1">
+                    <toolkit:Expander.Header>
+                        <Label Text="Authentication level" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <VerticalStackLayout>
+                            <RadioButton x:Name="MinimumAuthLevel" VerticalOptions="Center" Content="Minimum Authentication - Minimum authentication level" />
+                            <RadioButton x:Name="OptimumAuthLevel" VerticalOptions="Center" Content="Optimum Authentication - Optimum authentication level" />
+                            <RadioButton x:Name="MaximumAuthLevel" VerticalOptions="Center" Content="Maximum Authentication - Full authentication with all security features" />
+                        </VerticalStackLayout>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="2" Grid.Column="0">
+                    <toolkit:Expander.Header>
+                        <Label Text="RFID Readers" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <CollectionView x:Name="CardReader_List" SelectionMode="Multiple">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="x:Object">
+                                    <Grid Margin="0,0,0,0" Padding="0"  VerticalOptions="Center">
+                                        <Label Padding="10,0,0,0" Margin="0" Text="{Binding .}" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="2" Grid.Column="1">
+                    <toolkit:Expander.Header>
+                        <Label Text="RFID Files to Read" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <CollectionView x:Name="CardFile_List" SelectionMode="Multiple" HeightRequest="100">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="x:Object">
+                                    <Grid Margin="0,0,0,0" Padding="0"  VerticalOptions="Center">
+                                        <Label Padding="10,0,0,0" Margin="0" Text="{Binding .}" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+                </toolkit:Expander>
+
+                <toolkit:Expander IsExpanded="True" Grid.Row="3" Grid.Column="0">
+                    <toolkit:Expander.Header>
+                        <Label Text="GDS" BackgroundColor="#BC9C6A" TextColor="White" />
+                    </toolkit:Expander.Header>
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <VerticalStackLayout>
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Check_IsGdsUploadEnabled" IsChecked="False" Color="#BC9C6A" />
+                                <Label Text="Enable GDS Upload" VerticalOptions="Center" TextColor="Black" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="Check_IsGdsActionListEnabled" IsChecked="False" Color="#BC9C6A" />
+                                <Label Text="Enable GDS Action List" VerticalOptions="Center" TextColor="Black" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </toolkit:Expander>
+
+            </Grid>
+
+            <Grid HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" x:Name="cmdOK" Text="OK" HeightRequest="40" WidthRequest="120" Clicked="cmdOK_Clicked"/>
+                <Button Grid.Row="0" Grid.Column="1" x:Name="cmdCancel" Text="Cancel" HeightRequest="40" WidthRequest="120" Clicked="cmdCancel_Clicked"/>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</toolkit:Popup>

@@ -1,6 +1,6 @@
 /* This example shows the main capabilities of the image processing analyzer function.
  *
- *  - Reading different area of images (MRZ, VIZ, Barcode).
+ *  - Reading different areas of images (MRZ, VIZ, Barcode).
  *  - Displaying details of the complex result data (called field data).
  *    - Field identification
  *    - Raw, formatted and standardized values
@@ -110,7 +110,7 @@ namespace tutorial
         /// </summary>
         /// <param name="field">The field to process.</param>
         /// <returns>String representation of AMID.</returns>
-        static string GetAmid(Field field)
+        static string GetAmid(Pr22.Processing.Field field)
         {
             try
             {
@@ -126,7 +126,8 @@ namespace tutorial
         /// <param name="arr">The whole array.</param>
         /// <param name="pos">Position of the first item to print.</param>
         /// <param name="sz">Number of items to print.</param>
-        static string PrintBinary(byte[] arr, int pos, int sz)
+        /// <param name="split">Add extra space to some location.</param>
+        static string PrintBinary(byte[] arr, int pos, int sz, bool split)
         {
             int p0;
             string str = "", str2 = "";
@@ -136,6 +137,7 @@ namespace tutorial
                 str2 += arr[p0] < 0x21 || arr[p0] > 0x7e ? '.' : (char)arr[p0];
             }
             for (; p0 < pos + sz; p0++) { str += "   "; str2 += " "; }
+            if (split) str = str.Insert(sz / 2 * 3, " ") + " ";
             return str + str2;
         }
         //----------------------------------------------------------------------
@@ -148,7 +150,7 @@ namespace tutorial
         /// At the end, images of all fields are saved into png format.
         /// </remarks>
         /// <param name="doc"></param>
-        static void PrintDocFields(Document doc)
+        static void PrintDocFields(Pr22.Processing.Document doc)
         {
             System.Collections.Generic.List<FieldReference> Fields = doc.ListFields();
 
@@ -178,7 +180,7 @@ namespace tutorial
                     {
                         System.Console.WriteLine("  {0, -20}{1, -17}Binary", Fieldname, Status);
                         for (int cnt = 0; cnt < binValue.Length; cnt += 16)
-                            System.Console.WriteLine(PrintBinary(binValue, cnt, 16));
+                            System.Console.WriteLine(PrintBinary(binValue, cnt, 16, true));
                     }
                     else
                     {
@@ -194,7 +196,11 @@ namespace tutorial
                         System.Console.WriteLine(chk);
                     }
 
-                    try { CurrentField.GetImage().Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png"); }
+                    try
+                    {
+                        using (Pr22.Imaging.RawImage img = CurrentField.GetImage())
+                            img.Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png");
+                    }
                     catch (Pr22.Exceptions.General) { }
                 }
                 catch (Pr22.Exceptions.General) { }

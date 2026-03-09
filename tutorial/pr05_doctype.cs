@@ -6,10 +6,8 @@
  */
 namespace tutorial
 {
-    using System.Collections.Generic;
     using Pr22;
     using Pr22.Processing;
-    using Pr22.Util;
 
     class MainClass
     {
@@ -71,7 +69,7 @@ namespace tutorial
             Document OcrDoc = OcrEngine.Analyze(DocPage, ReadingTask);
 
             System.Console.WriteLine();
-            using (Variant vdoc = OcrDoc.ToVariant())
+            using (Pr22.Util.Variant vdoc = OcrDoc.ToVariant())
                 System.Console.WriteLine("Document code: " + vdoc.ToInt());
             System.Console.WriteLine("Document type: " + GetDocType(OcrDoc));
             System.Console.WriteLine("Status: " + OcrDoc.GetStatus().ToString());
@@ -92,7 +90,7 @@ namespace tutorial
         /// </summary>
         /// <param name="doc">The document to process.</param>
         /// <returns>String containing one letter identifiers for each related page.</returns>
-        static string GetRelatedPages(Document doc)
+        static string GetRelatedPages(Pr22.Processing.Document doc)
         {
             try
             {
@@ -106,7 +104,7 @@ namespace tutorial
         public static string GetFieldValue(Pr22.Processing.Document Doc, Pr22.Processing.FieldId Id)
         {
             FieldReference filter = new FieldReference(FieldSource.All, Id);
-            List<FieldReference> Fields = Doc.ListFields(filter);
+            System.Collections.Generic.List<FieldReference> Fields = Doc.ListFields(filter);
             foreach (FieldReference FR in Fields)
             {
                 Field fld = null;
@@ -123,11 +121,11 @@ namespace tutorial
         }
         //----------------------------------------------------------------------
 
-        public static string GetDocType(Document OcrDoc)
+        public static string GetDocType(Pr22.Processing.Document OcrDoc)
         {
             string documentTypeName;
 
-            using (Variant vdoc = OcrDoc.ToVariant())
+            using (Pr22.Util.Variant vdoc = OcrDoc.ToVariant())
                 documentTypeName = Pr22.Extension.DocumentType.GetDocumentName(vdoc.ToInt());
 
             if (documentTypeName == "")

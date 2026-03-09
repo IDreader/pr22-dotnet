@@ -79,7 +79,7 @@ in order to provide the possibility of comparing them to each other.
 
 Shows the main capabilities of the image processing analyzer function.
 
-- Reading different area of images (MRZ, VIZ, Barcode).
+- Reading different areas of images (MRZ, VIZ, Barcode).
 - Displaying details of the complex result data (called field data).
   - Field identification
   - Raw, formatted and standardized values
@@ -124,3 +124,23 @@ GDS (remote database) solution.
 - Generates a summary document comparing all data read.
 - Checking document and personal data in the remote database - if configured.
 - Uploads read data to remote database (GDS) - if configured.
+
+### GUI program:
+
+This example uses the MAUI framework.
+
+#### ReadDoc
+
+After opening the device via the menu, the reading process, which can be
+started by pressing the Scan button or by automatic motion detection, is
+executed according to the subtasks set in the options panel.
+
+The program performs the entire reading process in the background. It captures
+images with selected illuminations and analyzes the image data. If configured,
+it uses Carmen® ID Recognition Service (cloud authentication engine).
+In parallel, it reads ECard data after performing the related authentications.
+Finally, it compares the data with the GDS database and logs the data entry,
+if configured.
+
+The read data is displayed in various representation forms. The display
+elements can be opened or closed by clicking on their headers.

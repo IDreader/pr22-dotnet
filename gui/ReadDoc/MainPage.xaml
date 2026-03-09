@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReadDoc.MainPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:ReadDoc">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="cmdOpen" Text="Open" Order="Primary" Clicked="cmdOpen_Clicked" />
+        <ToolbarItem x:Name="cmdClose" IsEnabled="False" Text="Close" Order="Primary" Clicked="cmdClose_Clicked" />
+        <ToolbarItem x:Name="cmdScan" IsEnabled="False" Text="Scan" Order="Primary" Clicked="cmdScan_Clicked" />
+        <ToolbarItem x:Name="cmdOptions" IsEnabled="False" Text="Options" Order="Primary" Clicked="cmdOptions_Clicked" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+            <toolkit:Expander IsExpanded="True">
+                <toolkit:Expander.Header>
+                    <Label Text="Scanned Images" BackgroundColor="#BC9C6A" TextColor="White" />
+                </toolkit:Expander.Header>
+                <CollectionView x:Name="Capture_Results" ItemsLayout="HorizontalList" SelectionMode="Single">
+                    <CollectionView.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="TapGestureRecognizer_Tapped" />
+                    </CollectionView.GestureRecognizers>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:ScanResult">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25"/>
+                                    <RowDefinition Height="150"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Column="0" Grid.Row="0" Text="{Binding CapName}" HorizontalOptions="Fill" VerticalOptions="End" HorizontalTextAlignment="Center"  TextColor="Black" />
+                                <Image Grid.Column="0" Grid.Row="1" Aspect="AspectFit" Source="{Binding CapImage}" Margin="3,3" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </toolkit:Expander>
+
+            <toolkit:Expander IsExpanded="True">
+                <toolkit:Expander.Header>
+                    <Label Text="Summary" BackgroundColor="#BC9C6A" TextColor="White" />
+                </toolkit:Expander.Header>
+                <Border WidthRequest="600" HeightRequest="400" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Margin="10">
+
+                    <Grid x:Name="dataGrid" HorizontalOptions="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="200"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="300" />
+                            <ColumnDefinition Width="300" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Row="0" Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <CollectionView Grid.Row="1" Grid.Column="0" x:Name="Personal_data" ItemsUpdatingScrollMode="KeepLastItemInView" >
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:SummaryResult">
+                                        <Grid Padding="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="180" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0" Text="{Binding FieldName}"  FontAttributes="Bold"  TextColor="Black" />
+                                            <Label Grid.Column="1" Text="{Binding FieldValue}"  TextColor="Black" LineBreakMode="WordWrap" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Grid.Column="0" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <CollectionView Grid.Row="1" Grid.Column="0" x:Name="Document_data"  ItemsUpdatingScrollMode="KeepLastItemInView">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:SummaryResult">
+                                        <Grid Padding="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="180" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0" Text="{Binding FieldName}"  FontAttributes="Bold"  TextColor="Black" />
+                                            <Label Grid.Column="1" Text="{Binding FieldValue}"  TextColor="Black" LineBreakMode="WordWrap" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+
+                        <Grid Grid.Row="0" Grid.Column="1" x:Name="Photo" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <CollectionView Grid.Row="1" Grid.Column="0" x:Name="Face_Image" ItemsLayout="HorizontalList">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ImageResult">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="140" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="240"/>
+                                            </Grid.RowDefinitions>
+                                            <Image Grid.Column="0" Grid.Row="0" Aspect="AspectFit" Source="{Binding Image}" Margin="3,3" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Grid.Column="1" x:Name="Sinature" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <CollectionView Grid.Row="1" Grid.Column="0" x:Name="Signature_Image" ItemsLayout="VerticalList">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ImageResult">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="280" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="120"/>
+                                            </Grid.RowDefinitions>
+                                            <Image Grid.Column="0" Grid.Row="0" Aspect="AspectFit" Source="{Binding Image}" Margin="3,3" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+
+                    </Grid>
+                </Border>
+            </toolkit:Expander>
+
+            <toolkit:Expander  IsExpanded="True">
+                <toolkit:Expander.Header>
+                    <Label Text="Rfid Files" BackgroundColor="#BC9C6A" TextColor="White" />
+                </toolkit:Expander.Header>
+
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="600" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" Padding="8" Margin="3" StrokeShape="RoundRectangle 5,5,5,5">
+                        <CollectionView x:Name="Files_List" Grid.Row="1" Grid.Column="0" SelectionMode="Single" SelectionChanged="Files_List_SelectionChanged" >
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="local:RfidFile">
+                                    <Grid Margin="0,0,0,0" Padding="0"  VerticalOptions="Center">
+                                        <Label Padding="10,0,0,0" Margin="0" Text="{Binding Name}" TextColor="{Binding DisplayForecolor}" VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="1" Padding="8" Margin="3" StrokeShape="RoundRectangle 5,5,5,5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,*">
+                                <Label Text="Field" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                <Label Text="Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                            </Grid>
+                            <CollectionView x:Name="Fields_List" Grid.Row="1" Grid.Column="0">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:RfidField">
+                                        <Grid Padding="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0" Text="{Binding FieldName}"  FontAttributes="Bold"  TextColor="Black" />
+                                            <Label Grid.Column="1" Text="{Binding FieldValue}"  TextColor="Black" />
+                                            <Image Grid.Column="1" Aspect="AspectFit" Source="{Binding FieldImage}" Margin="3,3" HeightRequest="{Binding DisplayRowHeight}"  />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Grid>
+                    </Border>
+                    <VerticalStackLayout Margin="10" Grid.Row="0" Grid.Column="2">
+                        <Button x:Name="cmdDownload"  Text="DOWNLOAD" IsEnabled="False" WidthRequest="150" HeightRequest="40" HorizontalOptions="Center" Margin="0,10" Clicked="cmdDownload_Clicked" />
+                        <Button x:Name="cmdSaveXml" Text="SAVE XML" IsEnabled="False" WidthRequest="150" HeightRequest="40" HorizontalOptions="Center" Margin="0,10" Clicked="cmdSaveXml_Clicked" />
+                    </VerticalStackLayout>
+                </Grid>
+
+            </toolkit:Expander>
+
+            <toolkit:Expander IsExpanded="True" >
+                <toolkit:Expander.Header>
+                    <Label Text="Document Fields" BackgroundColor="#BC9C6A" TextColor="White" />
+                </toolkit:Expander.Header>
+
+                <VerticalStackLayout Margin="10">
+
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Label Text="MRZ" BackgroundColor="#BC9C6A" TextColor="White" />
+                        </toolkit:Expander.Header>
+
+                        <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="120"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" MinimumWidthRequest="1200">
+                                <ScrollView Orientation="Horizontal">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,400,200,200,200">
+                                            <Label Text="Name" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Formatted Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Standardized Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Status" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                        </Grid>
+                                        <CollectionView Grid.Row="1" Grid.Column="0" x:Name="MRZ_Results" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView" SelectionChanged="MRZ_Results_SelectionChanged">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:OcrResult">
+                                                    <Grid Padding="3">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="400" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"  Text="{Binding FieldName}"  FontAttributes="Bold" TextColor="Black" />
+                                                        <Label Grid.Column="1"  Text="{Binding FieldValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="2"  Text="{Binding FormattedValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="3"  Text="{Binding StandardizedValue}"  TextColor="Black" />
+                                                        <Label Grid.Column="4"  Text="{Binding FieldStatus}"  TextColor="Black" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </Grid>
+                                </ScrollView>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" >
+                                <Image x:Name="MRZ_Field_Image" Aspect="AspectFit"  HorizontalOptions="Fill" VerticalOptions="Fill" />
+                            </Border>
+                        </Grid>
+
+                    </toolkit:Expander>
+
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Label Text="VIZ" BackgroundColor="#BC9C6A" TextColor="White" />
+                        </toolkit:Expander.Header>
+
+                        <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="120"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" MinimumWidthRequest="1200">
+                                <ScrollView Orientation="Horizontal">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,400,200,200,200">
+                                            <Label Text="Name" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Formatted Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Standardized Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Status" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                        </Grid>
+                                        <CollectionView Grid.Row="1" Grid.Column="0" x:Name="VIZ_Results" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView" SelectionChanged="VIZ_Results_SelectionChanged">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:OcrResult">
+                                                    <Grid Padding="3">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="400" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"  Text="{Binding FieldName}"  FontAttributes="Bold" TextColor="Black" />
+                                                        <Label Grid.Column="1"  Text="{Binding FieldValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="2"  Text="{Binding FormattedValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="3"  Text="{Binding StandardizedValue}"  TextColor="Black" />
+                                                        <Label Grid.Column="4"  Text="{Binding FieldStatus}"  TextColor="Black" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </Grid>
+                                </ScrollView>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" >
+                                <Image x:Name="VIZ_Field_Image" Aspect="AspectFit"  HorizontalOptions="Fill" VerticalOptions="Fill" />
+                            </Border>
+                        </Grid>
+                    </toolkit:Expander>
+
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Label Text="BCR" BackgroundColor="#BC9C6A" TextColor="White" />
+                        </toolkit:Expander.Header>
+
+                        <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="120"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" MinimumWidthRequest="1200">
+                                <ScrollView Orientation="Horizontal">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,400,200,200,200">
+                                            <Label Text="Name" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Formatted Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Standardized Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Status" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                        </Grid>
+                                        <CollectionView Grid.Row="1" Grid.Column="0" x:Name="BCR_Results" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView" SelectionChanged="BCR_Results_SelectionChanged">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:OcrResult">
+                                                    <Grid Padding="3">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="400" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"  Text="{Binding FieldName}"  FontAttributes="Bold" TextColor="Black" />
+                                                        <Label Grid.Column="1"  Text="{Binding FieldValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="2"  Text="{Binding FormattedValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="3"  Text="{Binding StandardizedValue}"  TextColor="Black" />
+                                                        <Label Grid.Column="4"  Text="{Binding FieldStatus}"  TextColor="Black" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </Grid>
+                                </ScrollView>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" >
+                                <Image x:Name="BCR_Field_Image" Aspect="AspectFit"  HorizontalOptions="Fill" VerticalOptions="Fill" />
+                            </Border>
+                        </Grid>
+                    </toolkit:Expander>
+
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Label Text="All Fields" BackgroundColor="#BC9C6A" TextColor="White" />
+                        </toolkit:Expander.Header>
+
+                        <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="120"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" MinimumWidthRequest="1200">
+                                <ScrollView Orientation="Horizontal">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,400,200,200,200">
+                                            <Label Text="Name" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Value" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Formatted Value" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Standardized Value" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Status" Grid.Column="4" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                        </Grid>
+                                        <CollectionView Grid.Row="1" Grid.Column="0" x:Name="All_Results" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView" SelectionChanged="All_Results_SelectionChanged">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:OcrResult">
+                                                    <Grid Padding="3">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="400" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"  Text="{Binding FieldName}"  FontAttributes="Bold" TextColor="Black" />
+                                                        <Label Grid.Column="1"  Text="{Binding FieldValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="2"  Text="{Binding FormattedValue}"  TextColor="Black"  />
+                                                        <Label Grid.Column="3"  Text="{Binding StandardizedValue}"  TextColor="Black" />
+                                                        <Label Grid.Column="4"  Text="{Binding FieldStatus}"  TextColor="Black" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </Grid>
+                                </ScrollView>
+                            </Border>
+
+                            <Border Grid.Row="1" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" >
+                                <Image x:Name="All_Field_Image" Aspect="AspectFit"  HorizontalOptions="Fill" VerticalOptions="Fill" />
+                            </Border>
+                        </Grid>
+                    </toolkit:Expander>
+
+                    <toolkit:Expander>
+                        <toolkit:Expander.Header>
+                            <Label Text="Cross Checks" BackgroundColor="#BC9C6A" TextColor="White" />
+                        </toolkit:Expander.Header>
+
+                        <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Row="0" Grid.Column="0" Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3" MinimumWidthRequest="1200">
+                                <ScrollView Orientation="Horizontal">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0" Grid.Column="0" ColumnDefinitions="200,200,200">
+                                            <Label Text="Field1" Grid.Column="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Field2" Grid.Column="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                            <Label Text="Confidence" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" BackgroundColor="#BC9C6A" TextColor="White"/>
+                                        </Grid>
+                                        <CollectionView Grid.Row="1" Grid.Column="0" x:Name="CrossCheck_Results" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:CrossCheckResult">
+                                                    <Grid Padding="3">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                            <ColumnDefinition Width="200" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0"  Text="{Binding Field1}"  TextColor="Black" />
+                                                        <Label Grid.Column="1"  Text="{Binding Field2}"  TextColor="Black"  />
+                                                        <Label Grid.Column="2"  Text="{Binding Confidence}"  TextColor="Black"  />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+                                    </Grid>
+                                </ScrollView>
+                            </Border>
+                        </Grid>
+                    </toolkit:Expander>
+
+
+                </VerticalStackLayout>
+
+            </toolkit:Expander>
+
+            <toolkit:Expander IsExpanded="True" >
+                <toolkit:Expander.Header>
+                    <Label Text="Logs" BackgroundColor="#BC9C6A" TextColor="White" />
+                </toolkit:Expander.Header>
+                <Grid VerticalOptions="Fill" HorizontalOptions="Fill" Margin="10">
+                    <Border Stroke="Gray" StrokeShape="RoundRectangle 5,5,5,5" Padding="8" Margin="3">
+                        <ScrollView x:Name="MainLogsScrollView" HeightRequest="300">
+                            <Label x:Name="MainLogs" BackgroundColor="White" LineBreakMode="WordWrap" />
+                        </ScrollView>
+                    </Border>
+                </Grid>
+
+            </toolkit:Expander>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

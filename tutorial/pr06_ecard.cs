@@ -120,7 +120,7 @@ namespace tutorial
         /// <param name="SelectedCard"></param>
         /// <param name="CurrentAuth"></param>
         /// <returns></returns>
-        public bool Authenticate(ECard SelectedCard, Pr22.ECardHandling.AuthProcess CurrentAuth)
+        public bool Authenticate(Pr22.ECard SelectedCard, Pr22.ECardHandling.AuthProcess CurrentAuth)
         {
             BinData AdditionalAuthData = null;
             int selector = 0;
@@ -130,6 +130,7 @@ namespace tutorial
                 case Pr22.ECardHandling.AuthProcess.PACE:
                 case Pr22.ECardHandling.AuthProcess.BAP:
                     //Read MRZ (necessary for BAC, PACE and BAP)
+                    System.Console.WriteLine("- Getting MRZ for " + CurrentAuth);
                     Pr22.Task.DocScannerTask ScanTask = new Pr22.Task.DocScannerTask();
                     ScanTask.Add(Pr22.Imaging.Light.Infra);
                     Page FirstPage = pr.Scanner.Scan(ScanTask, Pr22.Imaging.PagePosition.First);
@@ -158,13 +159,14 @@ namespace tutorial
             }
             try
             {
+                System.Console.Write("- " + CurrentAuth + " authentication ");
                 SelectedCard.Authenticate(CurrentAuth, AdditionalAuthData, selector);
-                System.Console.WriteLine("- " + CurrentAuth + " authentication succeeded");
+                System.Console.WriteLine("succeeded");
                 return true;
             }
             catch (Pr22.Exceptions.General ex)
             {
-                System.Console.WriteLine("- " + CurrentAuth + " authentication failed: " + ex.Message);
+                System.Console.WriteLine("failed: " + ex.Message);
                 return false;
             }
         }
@@ -274,7 +276,7 @@ namespace tutorial
         /// At the end, images of all fields are saved into png format.
         /// </remarks>
         /// <param name="doc"></param>
-        static void PrintDocFields(Document doc)
+        static void PrintDocFields(Pr22.Processing.Document doc)
         {
             System.Collections.Generic.List<FieldReference> Fields = doc.ListFields();
 
@@ -297,6 +299,7 @@ namespace tutorial
                     catch (Pr22.Exceptions.EntryNotFound) { }
                     try { StandardizedValue = CurrentField.GetStandardizedStringValue(); }
                     catch (Pr22.Exceptions.EntryNotFound) { }
+                    //string Amid = GetAmid(CurrentField);
                     Status Status = CurrentField.GetStatus();
                     string Fieldname = CurrentFieldRef.ToString();
                     if (binValue != null)
@@ -304,11 +307,12 @@ namespace tutorial
                         System.Console.WriteLine("  {0, -20}{1, -17}Binary", Fieldname, Status);
                         //// Binary data can be printed out here
                         //for (int cnt = 0; cnt < binValue.Length; cnt += 16)
-                        //    System.Console.WriteLine(PrintBinary(binValue, cnt, 16));
+                        //    System.Console.WriteLine(PrintBinary(binValue, cnt, 16, true));
                     }
                     else
                     {
                         System.Console.WriteLine("  {0, -20}{1, -17}[{2}]", Fieldname, Status, Value);
+                        //if (Amid.Length > 0) System.Console.WriteLine("  {0}", Amid);
                         System.Console.WriteLine("\t{1, -31}[{0}]", FormattedValue, "   - Formatted");
                         System.Console.WriteLine("\t{1, -31}[{0}]", StandardizedValue, "   - Standardized");
                     }
@@ -319,7 +323,11 @@ namespace tutorial
                         System.Console.WriteLine(chk);
                     }
 
-                    try { CurrentField.GetImage().Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png"); }
+                    try
+                    {
+                        using (Pr22.Imaging.RawImage img = CurrentField.GetImage())
+                            img.Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png");
+                    }
                     catch (Pr22.Exceptions.General) { }
                 }
                 catch (Pr22.Exceptions.General) { }

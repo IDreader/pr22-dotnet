@@ -6,7 +6,7 @@ namespace Pr22.Extension
     {
         static CountryCode[] values = {
             new CountryCode("AFG", "Afghanistan"),
-            new CountryCode("ALA", "Åland Islands"),
+            new CountryCode("ALA", "Ã…land Islands"),
             new CountryCode("ALB", "Albania"),
             new CountryCode("DZA", "Algeria"),
             new CountryCode("ASM", "American Samoa"),
@@ -59,10 +59,10 @@ namespace Pr22.Extension
             new CountryCode("COG", "Congo"),
             new CountryCode("COK", "Cook Islands"),
             new CountryCode("CRI", "Costa Rica"),
-            new CountryCode("CIV", "Côte d'Ivoire"),
+            new CountryCode("CIV", "CÃ´te d'Ivoire"),
             new CountryCode("HRV", "Croatia"),
             new CountryCode("CUB", "Cuba"),
-            new CountryCode("CUW", "Curaçao"),
+            new CountryCode("CUW", "CuraÃ§ao"),
             new CountryCode("CYP", "Cyprus"),
             new CountryCode("CZE", "Czechia"),
             new CountryCode("DNK", "Denmark"),
@@ -186,11 +186,11 @@ namespace Pr22.Extension
             new CountryCode("PRT", "Portugal"),
             new CountryCode("PRI", "Puerto Rico"),
             new CountryCode("QAT", "Qatar"),
-            new CountryCode("REU", "Réunion"),
+            new CountryCode("REU", "RÃ©union"),
             new CountryCode("ROU", "Romania"),
             new CountryCode("RUS", "Russian Federation"),
             new CountryCode("RWA", "Rwanda"),
-            new CountryCode("BLM", "Saint Barthélemy"),
+            new CountryCode("BLM", "Saint BarthÃ©lemy"),
             new CountryCode("SHN", "Saint Helena"),
             new CountryCode("KNA", "Saint Kitts and Nevis"),
             new CountryCode("LCA", "Saint Lucia"),
@@ -272,6 +272,8 @@ namespace Pr22.Extension
             new CountryCode("XCO", "Common Market for Eastern and Southern Africa"),
             new CountryCode("XEC", "Economic Community of West African States"),
             new CountryCode("XPO", "Interpol"),
+            new CountryCode("XES", "Organization of Eastern Caribbean States"),
+            new CountryCode("XMP", "Parliamentary Assembly of the Mediterranean"),
             new CountryCode("XOM", "Sovereign Military Order of Malta"),
             new CountryCode("XDC", "Southern African Development Community"),
 
@@ -289,6 +291,8 @@ namespace Pr22.Extension
             new CountryCode("SCG", "Serbia and Montenegro"),
             new CountryCode("YUG", "Yugoslavia"),
             new CountryCode("FXX", "France, Metropolitan"),
+
+            new CountryCode("IAO", "International Civil Aviation Organization"),
         };
 
         private string name;

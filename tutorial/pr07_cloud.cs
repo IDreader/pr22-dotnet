@@ -15,7 +15,6 @@ namespace tutorial
 {
     using Pr22;
     using Pr22.Processing;
-    using Pr22.Util;
     using System.Collections.Generic;
 
     class MainClass
@@ -122,7 +121,7 @@ namespace tutorial
         /// <param name="SelectedCard"></param>
         /// <param name="CurrentAuth"></param>
         /// <returns></returns>
-        public bool Authenticate(ECard SelectedCard, Pr22.ECardHandling.AuthProcess CurrentAuth)
+        public bool Authenticate(Pr22.ECard SelectedCard, Pr22.ECardHandling.AuthProcess CurrentAuth)
         {
             BinData AdditionalAuthData = null;
             int selector = 0;
@@ -165,13 +164,14 @@ namespace tutorial
             }
             try
             {
+                System.Console.Write("- " + CurrentAuth + " authentication ");
                 SelectedCard.Authenticate(CurrentAuth, AdditionalAuthData, selector);
-                System.Console.WriteLine("- " + CurrentAuth + " authentication succeeded");
+                System.Console.WriteLine("succeeded");
                 return true;
             }
             catch (Pr22.Exceptions.General ex)
             {
-                System.Console.WriteLine("- " + CurrentAuth + " authentication failed: " + ex.Message);
+                System.Console.WriteLine("failed: " + ex.Message);
                 return false;
             }
         }
@@ -236,12 +236,13 @@ namespace tutorial
             Document VizDoc = OcrEngine.Analyze(DocPage, VIZReadingTask);
 
             System.Console.WriteLine();
-            System.Console.WriteLine("OCR engine: " + VizDoc.ToVariant().GetChild((int)VariantId.Ocr, 0).ToString());
+            using (Pr22.Util.Variant vdoc = VizDoc.ToVariant())
+                System.Console.WriteLine("OCR engine: " + vdoc.GetChild((int)Pr22.Util.VariantId.Ocr, 0).ToString());
 
             AllDocs = MrzDoc + VizDoc;
 
             System.Console.WriteLine();
-            using (Variant vdoc = AllDocs.ToVariant())
+            using (Pr22.Util.Variant vdoc = AllDocs.ToVariant())
                 System.Console.WriteLine("Document code: " + vdoc.ToInt());
             System.Console.WriteLine("Document type: " + GetDocType(AllDocs));
             System.Console.WriteLine("Status: " + AllDocs.GetStatus().ToString());
@@ -369,9 +370,11 @@ namespace tutorial
 
             System.Console.WriteLine("Final status: " + AllDocs.GetStatus().ToString());
             System.Console.WriteLine();
+            using (Document doc = OcrEngine.GetRootDocument())
+                doc.Save(Document.FileFormat.Zipped).Save("AllDocs.zip");
 
             System.Console.WriteLine("Query GDS:");
-            Variant chkList = null;
+            Pr22.Util.Variant chkList = null;
             try
             {
                 chkList = pr.DBClient.QueryDataBase();
@@ -385,13 +388,13 @@ namespace tutorial
             {
                 for (int ix = 0; ix < chkList.NItems; ++ix)
                 {
-                    Variant it = chkList[ix];
+                    Pr22.Util.Variant it = chkList[ix];
                     string name = it.Name;
                     System.Console.Write(" Document is " +
                         (it.ToInt() == 1 ? "found" : "not found") + " on the list " + name);
 
                     System.Console.WriteLine(" Status: " +
-                        ((Status)it.GetChild((int)VariantId.Checksum, 0).ToInt()).ToString());
+                        ((Status)it.GetChild((int)Pr22.Util.VariantId.Checksum, 0).ToInt()).ToString());
                 }
             }
 
@@ -416,7 +419,7 @@ namespace tutorial
         /// </summary>
         /// <param name="field">The field to process.</param>
         /// <returns>String representation of AMID.</returns>
-        static string GetAmid(Field field)
+        static string GetAmid(Pr22.Processing.Field field)
         {
             try
             {
@@ -447,11 +450,11 @@ namespace tutorial
         }
         //----------------------------------------------------------------------
 
-        public static string GetDocType(Document OcrDoc)
+        public static string GetDocType(Pr22.Processing.Document OcrDoc)
         {
             string documentTypeName;
 
-            using (Variant vdoc = OcrDoc.ToVariant())
+            using (Pr22.Util.Variant vdoc = OcrDoc.ToVariant())
                 documentTypeName = Pr22.Extension.DocumentType.GetDocumentName(vdoc.ToInt());
 
             if (documentTypeName == "")
@@ -480,7 +483,8 @@ namespace tutorial
         /// <param name="arr">The whole array.</param>
         /// <param name="pos">Position of the first item to print.</param>
         /// <param name="sz">Number of items to print.</param>
-        static string PrintBinary(byte[] arr, int pos, int sz)
+        /// <param name="split">Add extra space to some location.</param>
+        static string PrintBinary(byte[] arr, int pos, int sz, bool split)
         {
             int p0;
             string str = "", str2 = "";
@@ -490,6 +494,7 @@ namespace tutorial
                 str2 += arr[p0] < 0x21 || arr[p0] > 0x7e ? '.' : (char)arr[p0];
             }
             for (; p0 < pos + sz; p0++) { str += "   "; str2 += " "; }
+            if (split) str = str.Insert(sz / 2 * 3, " ") + " ";
             return str + str2;
         }
         //----------------------------------------------------------------------
@@ -502,7 +507,7 @@ namespace tutorial
         /// At the end, images of all fields are saved into png format.
         /// </remarks>
         /// <param name="doc"></param>
-        static void PrintDocFields(Document doc)
+        static void PrintDocFields(Pr22.Processing.Document doc)
         {
             System.Collections.Generic.List<FieldReference> Fields = doc.ListFields();
 
@@ -533,7 +538,7 @@ namespace tutorial
                         System.Console.WriteLine("  {0, -20}{1, -17}Binary", Fieldname, Status);
                         //// Binary data can be printed out here
                         //for (int cnt = 0; cnt < binValue.Length; cnt += 16)
-                        //    System.Console.WriteLine(PrintBinary(binValue, cnt, 16));
+                        //    System.Console.WriteLine(PrintBinary(binValue, cnt, 16, true));
                     }
                     else
                     {
@@ -549,7 +554,11 @@ namespace tutorial
                         System.Console.WriteLine(chk);
                     }
 
-                    try { CurrentField.GetImage().Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png"); }
+                    try
+                    {
+                        using (Pr22.Imaging.RawImage img = CurrentField.GetImage())
+                            img.Save(Pr22.Imaging.RawImage.FileFormat.Png).Save(Fieldname + ".png");
+                    }
                     catch (Pr22.Exceptions.General) { }
                 }
                 catch (Pr22.Exceptions.General) { }
